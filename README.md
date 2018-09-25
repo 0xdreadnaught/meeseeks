@@ -10,3 +10,8 @@ Meseeks scrapes pathofexile.com/trade to check for items. The main purpose of th
 
 # Configuration
 Once you have launched the script, Meseeks will continue to search for your items. If you alter the settings, they will take affect after the script has finished searching for all items in the current list.
+
+# Important
+This requires AHK v 1.1+ in order to work. If you receive errors about an illegal character around `wb := ComObjCreate("InternetExplorer.Application") ; create a IE instance`, then you most likely have 1.0.x. 
+In addition, this script requires Internet Explorer 11.0+ for it's web calls, any windows 10 system should have this by default. The script loads the requested pages in the background without a window. 
+For any random errors, try to rerun the script as administrator to see if that resolves the issue. If it doesn't, please submit the error to issues with as much info as possible so I can try to resolve it.
