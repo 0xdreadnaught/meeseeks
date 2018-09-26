@@ -27,6 +27,7 @@ else
 FileGetSize, searchSize, searches.txt
 	
 tick := 1
+limit := 0
 Loop 
 {
 	; get file size to check for changes
@@ -57,6 +58,18 @@ Loop
 		tick := 1
 	}
 	
+	; get length of current array and set limit
+	
+	for index, element in searchURLS
+	{
+		limit++
+	}
+	
+	if (tick > limit)
+	{
+		tick := 1
+	}
+	
 	wb := ComObjCreate("InternetExplorer.Application") ; create a IE instance
 	wb.Visible := False
 	searchURL := searchURLS[tick]
@@ -73,7 +86,36 @@ Loop
 			; SoundPlay, alert.mp3
 			MsgBox, Found`n%searchURL%
 			result := wb.Document.GetElementsByClassName("itemBoxContent")[0].innertext
-			MsgBox, %resultName%`nhas been found!
+			
+			SetTimer, ChangeButtonNamesB, 50 
+			MsgBox, 4, OK or Delete, %resultName%`nHas Been Found!
+
+			IfMsgBox, YES
+				option := "OK"
+			else 
+				option := "Delete"
+
+			if (option = "OK"){
+				MsgBox, I will continue to search for:`n%resultName%
+			} else {
+				; remove current search item from arrays
+				searchURLS.Delete(searchURL)
+				searchNames.Delete(resultName)
+				
+				; update searches.txt
+				FileDelete, searches.txt
+				FileAppend, , searches.txt
+				
+				tock := 1
+				for index, element in searchNames
+				{
+					FileAppend, resultName, searches.txt
+					FileAppend, search, searches.txt
+					tock++
+				}
+				tick := 1
+				Continue
+			}
 		}
 	} 
 	catch e 
@@ -88,7 +130,7 @@ Loop
 ; add or remove item
 ^l::
 ; #SingleInstance
-SetTimer, ChangeButtonNames, 50 
+SetTimer, ChangeButtonNamesA, 50 
 MsgBox, 4, Add or Delete, Add or Delete a search item?
 
 IfMsgBox, YES
@@ -109,13 +151,23 @@ if (option = "add"){
 return
 
 ; overwrite button names
-ChangeButtonNames: 
+ChangeButtonNamesA: 
 IfWinNotExist, Add or Delete
     return  ; Keep waiting.
 	
-SetTimer, ChangeButtonNames, Off 
+SetTimer, ChangeButtonNamesA, Off 
 WinActivate 
 ControlSetText, Button1, &Add 
+ControlSetText, Button2, &Delete 
+return
+
+ChangeButtonNamesB: 
+IfWinNotExist, OK or Delete
+    return  ; Keep waiting.
+	
+SetTimer, ChangeButtonNamesB, Off 
+WinActivate 
+ControlSetText, Button1, &OK
 ControlSetText, Button2, &Delete 
 return
 
