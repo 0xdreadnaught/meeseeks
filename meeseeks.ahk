@@ -12,7 +12,12 @@ else
 {
 	Loop, read, searches.txt 
 	{
-		if InStr(A_LoopReadLine, "www.pathofexile.com")
+		
+		if InStr(A_LoopReadLine, "https:`/`/www.pathofexile.com`/trade`/search`/")
+		{
+			searchURLS.Push(A_LoopReadLine)
+		}
+		else if InStr(A_LoopReadLine, "http:`/`/poe.trade`/search`/")
 		{
 			searchURLS.Push(A_LoopReadLine)
 		}
@@ -65,7 +70,7 @@ Loop
 				searchNames.Push(A_LoopReadLine)
 			}
 		}
-		tick := 1
+		tick := 1		
 	}
 	
 	; get length of current array and set limit
@@ -114,8 +119,11 @@ Loop
 				tock := 1
 				for index, element in searchNames
 				{
-					FileAppend, %resultName%`n, searches.txt
-					FileAppend, %searchURL%, searches.txt
+					loadName := element
+					loadURL := searchURLS[index]
+					FileAppend, %loadName%, searches.txt
+					FileAppend, `n, searches.txt
+					FileAppend, %loadURL%, searches.txt
 					
 					; append empty line if not the last entry
 					if (tock < limit)
@@ -158,7 +166,34 @@ if (option = "add"){
 	FileAppend, %searchURL%`n, searches.txt
 	MsgBox, Name: %searchName%`nURL: %searchURL%	
 } else {
-	MsgBox, Can't delete yet ...
+	; MsgBox, Can't delete yet ...	
+	
+	;find new longest name so we can scale the GUI width
+	longest := 0
+	temp := ""
+	
+	;create the GUI so we can add rows in the loop too
+	Gui, Add, ListView, x0 y0 w778 h210 +Center grid checked , Name|URL
+	
+	for index, element in searchNames
+	{
+		currentLength := StrLen(searchNames[index])
+		temp2 := searchNames[index]
+		
+		;add rows to Gui
+		lv_add("-check", searchNames[index], searchURLS[index])
+	
+		if (currentLength > longest)
+		{
+			longest := currentLength
+			temp := searchNames[index]
+		}
+	}	
+
+	lv_modifycol(1, "AutoHdr")
+	lv_modifycol(2, "AutoHdr")
+	Gui, Add, button, x100 gDelete, Submit
+	Gui, Show, x206 y176 h350 w863, Delete Search Items	
 }
 	
 return
@@ -182,6 +217,50 @@ SetTimer, ChangeButtonNamesB, Off
 WinActivate 
 ControlSetText, Button1, &OK
 ControlSetText, Button2, &Delete 
+return
+
+Delete:
+	checkedRowList :=
+	checked :=
+	while rowNumber := LV_GetNext(rowNumber, "C")
+	{
+		checkedRowList .= rowNumber . "X"
+	}
+	checked := RTrim(checkedRowList)
+	checkedArray := StrSplit(checked, "X")
+	Gui, Destroy
+	
+	; loop through checked array and delete corresponding items from searches.txt
+	for index, element in checkedArray
+	{
+		if (element > 0)
+		{
+			; remove current search item from arrays
+			searchURLS.RemoveAt(index)
+			searchNames.RemoveAt(index)
+			
+			; update searches.txt
+			FileDelete, searches.txt
+				
+			tock := 1
+			for index, element in searchNames
+			{
+				loadName := element
+				loadURL := searchURLS[index]
+				FileAppend, %loadName%, searches.txt
+				FileAppend, `n, searches.txt
+				FileAppend, %loadURL%, searches.txt
+				
+				; append empty line if not the last entry
+				if (tock < limit)
+				{
+					FileAppend, `n, searches.txt
+				}
+				tock++
+			}
+			tick := 1
+		}
+	}
 return
 
 ; kill script
