@@ -1,5 +1,4 @@
 ; main search loop
-
 searchURLS := []
 searchNames := []
 
@@ -96,37 +95,26 @@ Loop
 	{
 		if wb.Document.GetElementsByClassName("itemBoxContent")[0].innertext
 		{
-			; SoundPlay, alert.mp3
 			result := wb.Document.GetElementsByClassName("itemBoxContent")[0].innertext
 			
 			SetTimer, ChangeButtonNamesB, 50 
-			; MsgBox, 4, OK or Delete, %resultName%`nHas Been Found!`n`n%searchURL%
 			Gui, ItemFound: new 
 			Gui, ItemFound:Add, text, +Center vFoundHeader, Found
 			Gui, ItemFound:Add, text, +Center vFoundName, %resultName%
 			Gui ItemFound:Add, button, x0 y50 w75 h30 gHide, Hide
 			Gui ItemFound:Add, button, x125 y50 w75 h30 gRemove, Delete
-			
-			Gui ItemFound: Show, x0 y0 w200 h80
+			xLocation := A_ScreenWidth-200
+			Gui ItemFound: Show, x%xLocation% y0 NoActivate w200 h80
 			GuiControl, +Center, FoundHeader
+			
+			; SoundPlay, alert.mp3
+			SoundBeep, 200, 700
 			
 			pausing := 1
 			
 			Loop
 				z := z
 			Until pausing = 0
-			
-
-			IfMsgBox, YES
-				option := "OK"
-			else 
-				option := "Delete"
-
-			if (option = "OK"){ ;do nothing
-			} else {
-				
-				Continue
-			}
 		}
 	} 
 	catch e 
