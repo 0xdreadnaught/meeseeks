@@ -100,7 +100,22 @@ Loop
 			result := wb.Document.GetElementsByClassName("itemBoxContent")[0].innertext
 			
 			SetTimer, ChangeButtonNamesB, 50 
-			MsgBox, 4, OK or Delete, %resultName%`nHas Been Found!`n`n%searchURL%
+			; MsgBox, 4, OK or Delete, %resultName%`nHas Been Found!`n`n%searchURL%
+			Gui, ItemFound: new 
+			Gui, ItemFound:Add, text, +Center vFoundHeader, Found
+			Gui, ItemFound:Add, text, +Center vFoundName, %resultName%
+			Gui ItemFound:Add, button, x0 y50 w75 h30 gHide, Hide
+			Gui ItemFound:Add, button, x125 y50 w75 h30 gRemove, Delete
+			
+			Gui ItemFound: Show, x0 y0 w200 h80
+			GuiControl, +Center, FoundHeader
+			
+			pausing := 1
+			
+			Loop
+				z := z
+			Until pausing = 0
+			
 
 			IfMsgBox, YES
 				option := "OK"
@@ -109,30 +124,7 @@ Loop
 
 			if (option = "OK"){ ;do nothing
 			} else {
-				; remove current search item from arrays
-				searchURLS.RemoveAt(tick)
-				searchNames.RemoveAt(tick)
 				
-				; update searches.txt
-				FileDelete, searches.txt
-				
-				tock := 1
-				for index, element in searchNames
-				{
-					loadName := element
-					loadURL := searchURLS[index]
-					FileAppend, %loadName%, searches.txt
-					FileAppend, `n, searches.txt
-					FileAppend, %loadURL%, searches.txt
-					
-					; append empty line if not the last entry
-					if (tock < limit)
-					{
-						FileAppend, `n, searches.txt
-					}
-					tock++
-				}
-				tick := 1
 				Continue
 			}
 		}
@@ -149,6 +141,7 @@ Loop
 ; #SingleInstance
 SetTimer, ChangeButtonNamesA, 50 
 MsgBox, 4, Add or Delete, Add or Delete a search item?
+
 
 IfMsgBox, YES
     option := "add"
@@ -173,7 +166,8 @@ if (option = "add"){
 	temp := ""
 	
 	;create the GUI so we can add rows in the loop too
-	Gui, Add, ListView, x0 y0 w300 h270 +Center grid checked, Name
+	Gui, SearchList: new
+	Gui, SearchList:Add, ListView, x0 y0 w300 h270 +Center grid checked, Name
 	
 	for index, element in searchNames
 	{
@@ -192,9 +186,9 @@ if (option = "add"){
 
 	lv_modifycol(1, "AutoHdr")
 	lv_modifycol(2, "AutoHdr")
-	Gui, Add, button, x90 y275 gDelete, Delete
-	Gui, Add, button, x160 y275 gBrowse, View
-	Gui, Show, x206 y176 h305 w300, Delete Search Items
+	Gui SearchList:Add, button, x90 y275 gDelete, Delete
+	Gui SearchList:Add, button, x160 y275 gBrowse, View
+	Gui SearchList:Show, x206 y176 h305 w300, Delete Search Items
 }
 	
 return
@@ -220,6 +214,40 @@ ControlSetText, Button1, &OK
 ControlSetText, Button2, &Delete 
 return
 
+Hide:
+	Gui ItemFound:Destroy
+	pausing := 0
+return
+
+Remove:
+	Gui ItemFound:Destroy
+	pausing := 0
+	; remove current search item from arrays
+	searchURLS.RemoveAt(tick)
+	searchNames.RemoveAt(tick)
+				
+	; update searches.txt
+	FileDelete, searches.txt
+				
+	tock := 1
+	for index, element in searchNames
+	{
+		loadName := element
+		loadURL := searchURLS[index]
+		FileAppend, %loadName%, searches.txt
+		FileAppend, `n, searches.txt
+		FileAppend, %loadURL%, searches.txt
+					
+		; append empty line if not the last entry
+		if (tock < limit)
+		{
+			FileAppend, `n, searches.txt
+		}
+		tock++
+	}
+	tick := 1
+return
+
 Delete:
 	checkedRowList :=
 	checked :=
@@ -229,7 +257,7 @@ Delete:
 	}
 	checked := RTrim(checkedRowList)
 	checkedArray := StrSplit(checked, "X")
-	Gui, Destroy
+	Gui SearchList:Destroy
 	
 	; loop through checked array and delete corresponding items from searches.txt
 	for index, element in checkedArray
