@@ -173,7 +173,7 @@ if (option = "add"){
 	temp := ""
 	
 	;create the GUI so we can add rows in the loop too
-	Gui, Add, ListView, x0 y0 w778 h210 +Center grid checked , Name|URL
+	Gui, Add, ListView, x0 y0 w300 h270 +Center grid checked, Name
 	
 	for index, element in searchNames
 	{
@@ -192,8 +192,9 @@ if (option = "add"){
 
 	lv_modifycol(1, "AutoHdr")
 	lv_modifycol(2, "AutoHdr")
-	Gui, Add, button, x100 gDelete, Submit
-	Gui, Show, x206 y176 h350 w863, Delete Search Items	
+	Gui, Add, button, x90 y275 gDelete, Delete
+	Gui, Add, button, x160 y275 gBrowse, View
+	Gui, Show, x206 y176 h305 w300, Delete Search Items
 }
 	
 return
@@ -259,6 +260,30 @@ Delete:
 				tock++
 			}
 			tick := 1
+		}
+	}
+return
+
+Browse:
+	checkedRowList :=
+	checked :=
+	while rowNumber := LV_GetNext(rowNumber, "C")
+	{
+		checkedRowList .= rowNumber . "X"
+	}
+	checked := RTrim(checkedRowList)
+	checkedArray := StrSplit(checked, "X")
+	Gui, Destroy
+	
+	; loop through checked array and delete corresponding items from searches.txt
+	for index, element in checkedArray
+	{
+		if (element > 0)
+		{
+			; open selected search items in a browser
+			
+			target := searchURLS[index]
+			Run, %target%
 		}
 	}
 return
