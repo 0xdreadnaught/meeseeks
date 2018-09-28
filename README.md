@@ -1,5 +1,6 @@
 # meeseeks
 AHK based live search for Path of Exile
+(does not work in fullscreen mode. Only fullscreen windows or normal windowed modes)
 
 # Info
 Meeseeks scrapes pathofexile.com/trade to check for items. This is alternative to leaving whoop tabs open. 
@@ -8,13 +9,15 @@ When an item is found, not only is a sound played, but a dialog appears in the t
 Meeseeks uses IE 11 as a comObject to query pathofexile.com/trade. This is done due to the vast difference in resource consumption versus something like Chrome or FireFox. For testing, I kept 2 live searches open with Gmail and Reddit open in two other tabs. After 30 minutes, Chrome was using almost 3GB of RAM, Firefox was using just over 1GB. The IE comObject uses roughly 70MB of RAM when it queries an item. As it only queries one item at a time, this keeps resource utilization to a minimum. Bandwidth consumption should also be pretty low since the official trade site doesn't have a lot of data on it. Unlike poe.trade, it doesn't contain clunky ads. poe.trade support may be added in the future, however it is low on the priority list. poe.trade gets access to stash API data on a delay, that kind of defeats the purpose of this tool.
 
 # Hotkeys
+* Ctrl-Alt-L Initialize the script
 * CTRL-L Toggles Add or Delete search items
 * CTRL-SHIFT-L Kills the script
 
 # Initial Setup
 Using pathofexile.com/trade setup any search criteria you want and click search.
 Copy the new URL
-Press CTRL-L after starting meeseeks. 
+Press CTRL-ALT-L to start Meeseeks
+Press CTRL-L
 Select Add
 Enter the name you want to identify your search
 Select OK
@@ -30,6 +33,8 @@ Now you're good to go. Repeat the above steps as many times as you want.
   * Any windows 10 system should have this by default.
   
 # Notes
+For some reason without using the current initialization method, the alerts will either always show up on top, or never show up on top. Having Meeseeks launch via hotkey and then display a MsgBox after seems to fix this issue.
+
 If you receive any error messages, please try to be as descriptive as possible, and/or send me a screenshot. I will do my best to resolve the issue and update the tool.
 
 The sound of the alert can be altered if you want.
