@@ -1,5 +1,5 @@
 ; main search loop
-^!l::
+^!j::
 
 MsgBox, Can Do!
 
@@ -102,12 +102,14 @@ Loop
 			result := wb.Document.GetElementsByClassName("itemBoxContent")[0].innertext
 			
 			Gui, ItemFound: new 
-			Gui, ItemFound:Add, text, +Center vFoundHeader, Found
+			; Gui, ItemFound:Add, text, +Center vFoundHeader, Found
 			Gui, ItemFound:Add, text, +Center vFoundName, %resultName%
+			Gui, ItemFound:Add, Link,, View Item <a href="%searchURL%">link</a>
+			; Gui, ItemFound:Add, Link,, View <a href=%searchURL%>Here</a>
 			Gui ItemFound:Add, button, x0 y50 w75 h30 gHide, Hide
 			Gui ItemFound:Add, button, x125 y50 w75 h30 gRemove, Delete
 			xLocation := A_ScreenWidth-200
-			Gui ItemFound: Show, x%xLocation% y0 NA w200 h80
+			Gui ItemFound: Show, x%xLocation% y0 NA w200 h80, Found One!
 			
 			; SoundPlay, alert.mp3
 			SoundBeep, 200, 700
@@ -127,7 +129,7 @@ Loop
 
 
 ; add or remove item
-^l::
+^j::
 ; #SingleInstance
 SetTimer, ChangeButtonNames, 50 
 MsgBox, 4, Add or Delete, Add or Delete a search item?
@@ -297,7 +299,7 @@ Browse:
 return
 
 ; kill script
-^+l::
+^+j::
 ; destroy IE comobject
 wb.quit
 ExitApp
