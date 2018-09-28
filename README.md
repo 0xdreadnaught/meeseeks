@@ -45,3 +45,8 @@ Line 111: SoundBeep, 200, 700
 Line 110: ; SoundPlay, alert.mp3
 This works on some systems and not on others. If you want to try this, kill meeseeks and comment out line 111 with a ;
 Remove the ; from line 110 and rerun the script. I have found that this can result in either a working mp3p audio alert, an alert with no sound, or even triggering the alert. This is a weird issue with AHK that I am trying to resolve.
+
+# Known Issues
+When URLs are clicked, the window no longer remains on top. You need tab back to it to continue using it. This is a problem since Win10 was released. I am working on a fix for this at the moment.
+
+Since Meeseeks is a synchronous script, if an alert is present, it will not start searching for other items until the alert dialog is closed. I may possibly try to make the script asynchronous so it can search for multiple items at a the exact same time, but this would probably lead to stuttering and lag in game, which is not what I want to have happen.
