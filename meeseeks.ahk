@@ -180,7 +180,7 @@ if (option = "add"){
 	lv_modifycol(2, "AutoHdr")
 	Gui SearchList:Add, button, x90 y275 gDelete, Delete
 	Gui SearchList:Add, button, x160 y275 gBrowse, View
-	Gui SearchList:Show, x206 y176 h305 w300, Delete Search Items
+	Gui SearchList:Show, h305 w300, Delete Search Items
 }
 	
 return
