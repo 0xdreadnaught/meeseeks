@@ -1,4 +1,8 @@
 ; main search loop
+^!l::
+
+MsgBox, Can Do!
+
 searchURLS := []
 searchNames := []
 
@@ -97,15 +101,13 @@ Loop
 		{
 			result := wb.Document.GetElementsByClassName("itemBoxContent")[0].innertext
 			
-			SetTimer, ChangeButtonNamesB, 50 
 			Gui, ItemFound: new 
 			Gui, ItemFound:Add, text, +Center vFoundHeader, Found
 			Gui, ItemFound:Add, text, +Center vFoundName, %resultName%
 			Gui ItemFound:Add, button, x0 y50 w75 h30 gHide, Hide
 			Gui ItemFound:Add, button, x125 y50 w75 h30 gRemove, Delete
 			xLocation := A_ScreenWidth-200
-			Gui ItemFound: Show, x%xLocation% y0 NoActivate w200 h80
-			GuiControl, +Center, FoundHeader
+			Gui ItemFound: Show, x%xLocation% y0 NA w200 h80
 			
 			; SoundPlay, alert.mp3
 			SoundBeep, 200, 700
@@ -127,7 +129,7 @@ Loop
 ; add or remove item
 ^l::
 ; #SingleInstance
-SetTimer, ChangeButtonNamesA, 50 
+SetTimer, ChangeButtonNames, 50 
 MsgBox, 4, Add or Delete, Add or Delete a search item?
 
 
@@ -182,23 +184,13 @@ if (option = "add"){
 return
 
 ; overwrite button names
-ChangeButtonNamesA: 
+ChangeButtonNames: 
 IfWinNotExist, Add or Delete
     return  ; Keep waiting.
 	
-SetTimer, ChangeButtonNamesA, Off 
+SetTimer, ChangeButtonNames, Off 
 WinActivate 
 ControlSetText, Button1, &Add 
-ControlSetText, Button2, &Delete 
-return
-
-ChangeButtonNamesB: 
-IfWinNotExist, OK or Delete
-    return  ; Keep waiting.
-	
-SetTimer, ChangeButtonNamesB, Off 
-WinActivate 
-ControlSetText, Button1, &OK
 ControlSetText, Button2, &Delete 
 return
 
