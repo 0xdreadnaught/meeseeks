@@ -1,7 +1,9 @@
 ; main search loop
 ^!j::
 
+SoundPlay, meeseeks_can_do.mp3
 MsgBox, Can Do!
+
 
 searchURLS := []
 searchNames := []
@@ -111,8 +113,8 @@ Loop
 			xLocation := A_ScreenWidth-200
 			Gui ItemFound: Show, x%xLocation% y0 NA w200 h80, Found One!
 			
-			; SoundPlay, alert.mp3
-			SoundBeep, 200, 700
+			SoundPlay, meeseeks_look_at_me.mp3
+			; SoundBeep, 200, 700
 			
 			pausing := 1
 			
@@ -147,8 +149,10 @@ if (option = "add"){
 	{
 		FileAppend, `n, searches.txt
 	}
+	searchNames.Push(searchName)
+	searchURLS.Push(searchURL)
 	FileAppend, %searchName%`n, searches.txt
-	FileAppend, %searchURL%`n, searches.txt
+	FileAppend, %searchURL%, searches.txt
 	MsgBox, Name: %searchName%`nURL: %searchURL%	
 } else {
 	; MsgBox, Can't delete yet ...	
